@@ -1,0 +1,25 @@
+{
+  "name": "SolarSystem",
+  "authors": [
+    "Gursharnbir Singh <gsing538@my.centennialcollege.ca>"
+  ],
+  "description": "COMP 392 - SolarSystem",
+  "main": "",
+  "moduleType": [],
+  "license": "MIT",
+  "homepage": "https://github.com/gvirk/SolarSystem.git",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests",
+    "Scripts/lib"
+  ],
+  "dependencies": {
+    "three.js": "threejs#*",
+    "dat-gui": "~0.5.1",
+    "stats.js": "*",
+    "threex.colliders": "*"
+  }
+}
