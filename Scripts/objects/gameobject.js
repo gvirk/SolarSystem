@@ -1,4 +1,8 @@
 /// <reference path="../../typings/tsd.d.ts"/>
+/**
+ * @author: Gursharnbir Singh
+ * @project name : SolarSystem
+ */
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -8,7 +12,6 @@ var objects;
 (function (objects) {
     var gameObject = (function (_super) {
         __extends(gameObject, _super);
-        //CONSTRUCTOR ++++++++++++++++++++++++++++++++++++++++++++++++++++
         function gameObject(geometry, material, x, y, z) {
             _super.call(this, geometry, material);
             this._geometry = geometry;

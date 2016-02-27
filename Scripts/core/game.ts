@@ -1,8 +1,9 @@
 /// <reference path="_reference.ts"/>
+/**
+ * @author: Gursharnbir Singh
+ * @project name : SolarSystem
+ */
 
-// MAIN GAME FILE
-
-// THREEJS Aliases
 import Scene = THREE.Scene;
 import Renderer = THREE.WebGLRenderer;
 import PerspectiveCamera = THREE.PerspectiveCamera;
@@ -25,166 +26,185 @@ import GUI = dat.GUI;
 import Color = THREE.Color;
 import Vector3 = THREE.Vector3;
 import Face3 = THREE.Face3;
-import Point = objects.Point;
-
-//Custom Game Objects
 import gameObject = objects.gameObject;
+
 
 var scene: Scene;
 var renderer: Renderer;
 var camera: PerspectiveCamera;
 var axes: AxisHelper;
-var cube: Mesh;
-var plane: Mesh;
-var sphere: Mesh;
 var ambientLight: AmbientLight;
 var spotLight: SpotLight;
+var pointLight: PointLight;
 var control: Control;
 var gui: GUI;
 var stats: Stats;
 var step: number = 0;
-var vertices: Vector3[] = new Array<Vector3>();
-var faces: Face3[] = new Array<Face3>();
-var customGeometry: Geometry;
-var customMaterials: Material[] = new Array<Material>();
-var customMesh: Object3D;
+
+//sun mesh
+var sun: Mesh;
+
+//planet objects
+var mercuryObject: Object3D;
+var venusObject: Object3D;
+var earthObject: Object3D;
+var marsObject: Object3D;
+var jupiterObject: Object3D;
+
+//planet meshs
+var mercuryMesh: Mesh;
+var venusMesh: Mesh;
+var earthMesh: Mesh;
+var marshMesh: Mesh;
+var jupiterMesh: Mesh;
+
+//moon mesh
+var moonMesh: Mesh;
 
 function init() {
-    // Instantiate a new Scene object
+
     scene = new Scene();
 
-    setupRenderer(); // setup the default renderer
-	
-    setupCamera(); // setup the camera
-	
-    // add an axis helper to the scene
+    setupRenderer();
+
+    setupCamera();
+
     axes = new AxisHelper(20);
     scene.add(axes);
     console.log("Added Axis Helper to scene...");
     
-    //Add a Plane to the Scene
-    plane = new gameObject(
-        new PlaneGeometry(60, 40, 1, 1),
-        new LambertMaterial({ color: 0xffffff }),
+    //adding sun
+    sun = new gameObject(
+        new SphereGeometry(3, 32, 32),
+        new LambertMaterial({map: THREE.ImageUtils.loadTexture("img/sun.jpg")}),
         0, 0, 0);
 
-    plane.rotation.x = -0.5 * Math.PI;
-
-    scene.add(plane);
-    console.log("Added Plane Primitive to scene...");
      
+    scene.add(sun);
+    
+    //rotation game objects
+    mercuryObject = new Object3D();
+    venusObject = new Object3D();
+    earthObject = new Object3D();
+    marsObject = new Object3D();
+    jupiterObject = new Object3D();
+
+    mercuryObject.position.set(0, 0, 0);
+    venusObject.position.set(0, 0, 0);
+    earthObject.position.set(0, 0, 0);
+    marsObject.position.set(0, 0, 0);
+    jupiterObject.position.set(0, 0, 0);
+
+    sun.add(mercuryObject);
+    sun.add(venusObject);
+    sun.add(earthObject);
+    sun.add(marsObject);
+    sun.add(jupiterObject);
+
+    mercuryMesh = new gameObject(
+        new SphereGeometry(1, 32, 32),
+        new LambertMaterial({map: THREE.ImageUtils.loadTexture("img/planetmercury.jpg")}),
+        -5, 0, 0);
+
+    mercuryObject.add(mercuryMesh);
+    console.log("added planet");
+
+    venusMesh = new gameObject(
+        new SphereGeometry(1, 32, 32),
+        new LambertMaterial({map: THREE.ImageUtils.loadTexture("img/planetvenus.jpg")}),
+        -10, 0, 0);
+
+    venusObject.add(venusMesh);
+
+    earthMesh = new gameObject(
+        new SphereGeometry(1.5, 32, 32),
+        new LambertMaterial({map: THREE.ImageUtils.loadTexture("img/planetearth.jpg")}),
+        -13, 0, 0);
+
+    earthObject.add(earthMesh);
+
+    moonMesh = new gameObject(
+        new SphereGeometry(0.5, 32, 32),
+        new LambertMaterial({map: THREE.ImageUtils.loadTexture("img/planetmoon.jpg")}),
+        -1.5, 0, 1.5);
+
+    earthMesh.add(moonMesh);
+
+    marshMesh = new gameObject(
+        new SphereGeometry(1.1, 32, 32),
+        new LambertMaterial({map: THREE.ImageUtils.loadTexture("img/planetmars.jpg")}),
+        -16, 0, 0);
+
+    marsObject.add(marshMesh);
+     moonMesh = new gameObject(
+        new SphereGeometry(0.2, 32, 32),
+        new LambertMaterial({map: THREE.ImageUtils.loadTexture("img/mars-moon.jpg")}),
+        -0.3, 0, 1.5);
+
+    marshMesh.add(moonMesh);
+    
+
+    jupiterMesh = new gameObject(
+        new SphereGeometry(2, 32, 32),
+        new LambertMaterial({map: THREE.ImageUtils.loadTexture("img/planetjupiter.jpg")}),
+        -21, 0, 0);
+
+    jupiterObject.add(jupiterMesh);
+    
+     moonMesh = new gameObject(
+        new SphereGeometry(0.2, 32, 32),
+        new LambertMaterial({map: THREE.ImageUtils.loadTexture("img/mars_moon.jpg")}),
+        -1.8, 0, 1.5);
+
+    jupiterMesh.add(moonMesh);
+
     
     // Add an AmbientLight to the scene
-    ambientLight = new AmbientLight(0x090909);
+    ambientLight = new AmbientLight(0xa5a5a5);
     scene.add(ambientLight);
     console.log("Added an Ambient Light to Scene");
 	
-    // Add a SpotLight to the scene
-    spotLight = new SpotLight(0xffffff);
-    spotLight.position.set(-40, 60, 10);
-    spotLight.castShadow = true;
-    scene.add(spotLight);
-    console.log("Added a SpotLight Light to Scene");
-    
-    // Call the Custom Mesh function
-    initializeCustomMesh();
-    
+    //Add a PointLight to the scene
+   //(Represents the sun's light)
+   pointLight = new PointLight(0xffffff);
+   
+   pointLight.castShadow = true;
+   pointLight.intensity = 1;
+   pointLight.shadowMapHeight = 2048;
+   pointLight.shadowMapWidth = 2048;
+   scene.add(pointLight);
+   console.log("Added a PointLight to the scene");
     
     // add controls
     gui = new GUI();
-    control = new Control(customMesh);
-    addControlPoints();
-    addControl(control);
+    
+    var zoomIn = { add: function() { 
+        camera.position = new Vector3(0, 0, 0);
+        earthObject.add(camera);
+        camera.lookAt(earthMesh.position);
+     } };
+     
+     var zoomOut = { add: function() { 
+        earthObject.remove(camera);
+        camera.position.x = -20;
+        camera.position.y = 25;
+        camera.position.z = 20;
+        camera.lookAt(new Vector3(5, 0, 0));
+     } };
+    
+
+    gui.add(zoomIn, 'add');
+    gui.add(zoomOut, 'add');
 
     // Add framerate stats
     addStatsObject();
     console.log("Added Stats to scene...");
 
     document.body.appendChild(renderer.domElement);
-    gameLoop(); // render the scene	
-    
-    window.addEventListener('resize', onResize, false);
+
+    gameLoop(); // render the scene	   
 }
 
-function initializeCustomMesh(): void {
-    vertices = [
-        new THREE.Vector3(1, 3, 1),
-        new THREE.Vector3(1, 3, -1),
-        new THREE.Vector3(1, -1, 1),
-        new THREE.Vector3(1, -1, -1),
-        new THREE.Vector3(-1, 3, -1),
-        new THREE.Vector3(-1, 3, 1),
-        new THREE.Vector3(-1, -1, -1),
-        new THREE.Vector3(-1, -1, 1)
-    ];
-
-    faces = [
-        new THREE.Face3(0, 2, 1),
-        new THREE.Face3(2, 3, 1),
-        new THREE.Face3(4, 6, 5),
-        new THREE.Face3(6, 7, 5),
-        new THREE.Face3(4, 5, 1),
-        new THREE.Face3(5, 0, 1),
-        new THREE.Face3(7, 6, 2),
-        new THREE.Face3(6, 3, 2),
-        new THREE.Face3(5, 7, 0),
-        new THREE.Face3(7, 2, 0),
-        new THREE.Face3(1, 3, 4),
-        new THREE.Face3(3, 6, 4),
-    ];
-
-    createCustomMesh();
-
-    console.log("Added Custom Mesh to Scene");
-}
-
-function addControlPoints(): void {
-    control.points.push(new Point(3, 5, 3));
-    control.points.push(new Point(3, 5, 0));
-    control.points.push(new Point(3, 0, 3));
-    control.points.push(new Point(3, 0, 0));
-    control.points.push(new Point(0, 5, 0));
-    control.points.push(new Point(0, 5, 3));
-    control.points.push(new Point(0, 0, 0));
-    control.points.push(new Point(0, 0, 3));
-}
-
-function createCustomMesh() {
-    customGeometry = new Geometry();
-    customGeometry.vertices = vertices;
-    customGeometry.faces = faces;
-    customGeometry.mergeVertices();
-    customGeometry.computeFaceNormals();
-
-    customMaterials = [
-        new LambertMaterial({ opacity: 0.6, color: 0x44ff44, transparent: true }),
-        new MeshBasicMaterial({ color: 0x000000, wireframe: true })
-    ];
-
-    customMesh = THREE.SceneUtils.createMultiMaterialObject(customGeometry, customMaterials);
-    customMesh.children.forEach((child) => {
-        child.castShadow = true;
-    });
-    customMesh.name = "customMesh";
-    scene.add(customMesh);
-}
-
-function onResize(): void {
-    camera.aspect = window.innerWidth / window.innerHeight;
-    camera.updateProjectionMatrix();
-    renderer.setSize(window.innerWidth, window.innerHeight);
-}
-
-function addControl(controlObject: Control): void {
-    gui.add(controlObject, 'clone');
-    for (var index = 0; index < 8; index++) {
-        var folder: GUI;
-        folder = gui.addFolder('Vertices ' + (index + 1));
-        folder.add(controlObject.points[index], 'x', -10, 10);
-        folder.add(controlObject.points[index], 'y', -10, 10);
-        folder.add(controlObject.points[index], 'z', -10, 10);
-    }
-}
 
 function addStatsObject() {
     stats = new Stats();
@@ -195,42 +215,41 @@ function addStatsObject() {
     document.body.appendChild(stats.domElement);
 }
 
-// Setup main game loop
 function gameLoop(): void {
     stats.update();
 
-    vertices = new Array<Vector3>();
-    for (var index = 0; index < 8; index++) {
-        vertices.push(new Vector3(
-            control.points[index].x,
-            control.points[index].y,
-            control.points[index].z));
-    }
+    //orbit of the planets
+    mercuryObject.rotation.y += 0.04;
+    venusObject.rotation.y += 0.025;
+    earthObject.rotation.y += 0.01;
+    marsObject.rotation.y += 0.008;
+    jupiterObject.rotation.y += 0.002;
+    
+    //orbit of moon 
+    earthMesh.rotation.y += 0.02;
+    jupiterMesh.rotation.y += 0.05;
+    marshMesh.rotation.y += 0.05;
 
-    // remove our customMesh from the scene and add it every frame 
-    scene.remove(scene.getObjectByName("customMesh"));
-    createCustomMesh();
-
-    // render using requestAnimationFrame
     requestAnimationFrame(gameLoop);
-	
-    // render the scene
+
     renderer.render(scene, camera);
 }
 
-// Setup default renderer
-function setupRenderer(): void {
-    renderer = new Renderer();
-    renderer.setClearColor(0xEEEEEE, 1.0);
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.shadowMap.enabled = true;
-    console.log("Finished setting up Renderer...");
-}
 
+function setupRenderer(): void {
+        renderer = new THREE.WebGLRenderer({ antialias: false,alpha:true });
+       // renderer.setSize( window.innerWidth, window.innerHeight );
+        renderer.setClearColor(0x000000, 0);
+       // renderer = new Renderer({ alpha: true });
+      //  renderer.setClearColor(0xffffff, 0.0);
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.shadowMap.enabled = true;
+        console.log("Finished setting up Renderer...");
+    }
 // Setup main camera for the scene
 function setupCamera(): void {
-    camera = new PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
-    camera.position.x = -20;
+    camera = new PerspectiveCamera(45, window.innerWidth / window.innerHeight);
+    camera.position.x = -50;
     camera.position.y = 25;
     camera.position.z = 20;
     camera.lookAt(new Vector3(5, 0, 0));
