@@ -40,19 +40,19 @@ var step = 0;
 //sun mesh
 var sun;
 //planet objects
-var object_mercury;
-var object_venus;
-var object_earth;
-var object_mars;
-var object_jupiter;
+var mercuryObject;
+var venusObject;
+var earthObject;
+var marsObject;
+var jupiterObject;
 //planet meshs
-var mesh_mercury;
-var mesh_venus;
-var mesh_earth;
-var mesh_mars;
-var mesh_jupiter;
+var mercuryMesh;
+var venusMesh;
+var earthMesh;
+var marshMesh;
+var jupiterMesh;
 //moon mesh
-var moon;
+var moonMesh;
 function init() {
     scene = new Scene();
     setupRenderer();
@@ -60,42 +60,42 @@ function init() {
     axes = new AxisHelper(20);
     scene.add(axes);
     console.log("Added Axis Helper to scene...");
-    //add sun
+    //adding sun
     sun = new gameObject(new SphereGeometry(3, 32, 32), new LambertMaterial({ map: THREE.ImageUtils.loadTexture("img/sun.jpg") }), 0, 0, 0);
     scene.add(sun);
     //rotation game objects
-    object_mercury = new Object3D();
-    object_venus = new Object3D();
-    object_earth = new Object3D();
-    object_mars = new Object3D();
-    object_jupiter = new Object3D();
-    object_mercury.position.set(0, 0, 0);
-    object_venus.position.set(0, 0, 0);
-    object_earth.position.set(0, 0, 0);
-    object_mars.position.set(0, 0, 0);
-    object_jupiter.position.set(0, 0, 0);
-    sun.add(object_mercury);
-    sun.add(object_venus);
-    sun.add(object_earth);
-    sun.add(object_mars);
-    sun.add(object_jupiter);
-    mesh_mercury = new gameObject(new SphereGeometry(1, 32, 32), new LambertMaterial({ map: THREE.ImageUtils.loadTexture("img/planetmercury.jpg") }), -5, 0, 0);
-    object_mercury.add(mesh_mercury);
+    mercuryObject = new Object3D();
+    venusObject = new Object3D();
+    earthObject = new Object3D();
+    marsObject = new Object3D();
+    jupiterObject = new Object3D();
+    mercuryObject.position.set(0, 0, 0);
+    venusObject.position.set(0, 0, 0);
+    earthObject.position.set(0, 0, 0);
+    marsObject.position.set(0, 0, 0);
+    jupiterObject.position.set(0, 0, 0);
+    sun.add(mercuryObject);
+    sun.add(venusObject);
+    sun.add(earthObject);
+    sun.add(marsObject);
+    sun.add(jupiterObject);
+    mercuryMesh = new gameObject(new SphereGeometry(1, 32, 32), new LambertMaterial({ map: THREE.ImageUtils.loadTexture("img/planetmercury.jpg") }), -5, 0, 0);
+    mercuryObject.add(mercuryMesh);
     console.log("added planet");
-    mesh_venus = new gameObject(new SphereGeometry(1, 32, 32), new LambertMaterial({ map: THREE.ImageUtils.loadTexture("img/planetvenus.jpg") }), -10, 0, 0);
-    object_venus.add(mesh_venus);
-    mesh_earth = new gameObject(new SphereGeometry(1.5, 32, 32), new LambertMaterial({ map: THREE.ImageUtils.loadTexture("img/planetearth.jpg") }), -13, 0, 0);
-    object_earth.add(mesh_earth);
-    moon = new gameObject(new SphereGeometry(0.5, 32, 32), new LambertMaterial({ map: THREE.ImageUtils.loadTexture("img/planetmoon.jpg") }), -1.5, 0, 1.5);
-    mesh_earth.add(moon);
-    mesh_mars = new gameObject(new SphereGeometry(1.1, 32, 32), new LambertMaterial({ map: THREE.ImageUtils.loadTexture("img/planetmars.jpg") }), -16, 0, 0);
-    object_mars.add(mesh_mars);
-    moon = new gameObject(new SphereGeometry(0.2, 32, 32), new LambertMaterial({ map: THREE.ImageUtils.loadTexture("img/mars-moon.jpg") }), -0.3, 0, 1.5);
-    mesh_mars.add(moon);
-    mesh_jupiter = new gameObject(new SphereGeometry(2, 32, 32), new LambertMaterial({ map: THREE.ImageUtils.loadTexture("img/planetjupiter.jpg") }), -21, 0, 0);
-    object_jupiter.add(mesh_jupiter);
-    moon = new gameObject(new SphereGeometry(0.2, 32, 32), new LambertMaterial({ map: THREE.ImageUtils.loadTexture("img/mars_moon.jpg") }), -1.8, 0, 1.5);
-    mesh_jupiter.add(moon);
+    venusMesh = new gameObject(new SphereGeometry(1, 32, 32), new LambertMaterial({ map: THREE.ImageUtils.loadTexture("img/planetvenus.jpg") }), -10, 0, 0);
+    venusObject.add(venusMesh);
+    earthMesh = new gameObject(new SphereGeometry(1.5, 32, 32), new LambertMaterial({ map: THREE.ImageUtils.loadTexture("img/planetearth.jpg") }), -13, 0, 0);
+    earthObject.add(earthMesh);
+    moonMesh = new gameObject(new SphereGeometry(0.5, 32, 32), new LambertMaterial({ map: THREE.ImageUtils.loadTexture("img/planetmoon.jpg") }), -1.5, 0, 1.5);
+    earthMesh.add(moonMesh);
+    marshMesh = new gameObject(new SphereGeometry(1.1, 32, 32), new LambertMaterial({ map: THREE.ImageUtils.loadTexture("img/planetmars.jpg") }), -16, 0, 0);
+    marsObject.add(marshMesh);
+    moonMesh = new gameObject(new SphereGeometry(0.2, 32, 32), new LambertMaterial({ map: THREE.ImageUtils.loadTexture("img/mars-moon.jpg") }), -0.3, 0, 1.5);
+    marshMesh.add(moonMesh);
+    jupiterMesh = new gameObject(new SphereGeometry(2, 32, 32), new LambertMaterial({ map: THREE.ImageUtils.loadTexture("img/planetjupiter.jpg") }), -21, 0, 0);
+    jupiterObject.add(jupiterMesh);
+    moonMesh = new gameObject(new SphereGeometry(0.2, 32, 32), new LambertMaterial({ map: THREE.ImageUtils.loadTexture("img/mars_moon.jpg") }), -1.8, 0, 1.5);
+    jupiterMesh.add(moonMesh);
     // Add an AmbientLight to the scene
     ambientLight = new AmbientLight(0xa5a5a5);
     scene.add(ambientLight);
@@ -110,26 +110,25 @@ function init() {
     scene.add(pointLight);
     console.log("Added a PointLight to the scene");
     // add controls
+    // add controls
     gui = new GUI();
-    var zoomIn = { add: function () {
-            camera.position = new Vector3(0, 0, 0);
-            object_earth.add(camera);
-            camera.lookAt(mesh_earth.position);
-        } };
-    var zoomOut = { add: function () {
-            object_earth.remove(camera);
-            camera.position.x = -20;
-            camera.position.y = 25;
-            camera.position.z = 20;
-            camera.lookAt(new Vector3(5, 0, 0));
-        } };
-    gui.add(zoomIn, 'add');
-    gui.add(zoomOut, 'add');
+    control = new Control(0.002);
+    addControl(control);
     // Add framerate stats
     addStatsObject();
     console.log("Added Stats to scene...");
     document.body.appendChild(renderer.domElement);
     gameLoop(); // render the scene	   
+    window.addEventListener('resize', onResize, false);
+}
+function onResize() {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+}
+function addControl(controlObject) {
+    gui.add(controlObject, 'zoomInEarth');
+    gui.add(controlObject, 'zoom').listen();
 }
 function addStatsObject() {
     stats = new Stats();
@@ -142,15 +141,15 @@ function addStatsObject() {
 function gameLoop() {
     stats.update();
     //orbit of the planets
-    object_mercury.rotation.y += 0.04;
-    object_venus.rotation.y += 0.025;
-    object_earth.rotation.y += 0.01;
-    object_mars.rotation.y += 0.008;
-    object_jupiter.rotation.y += 0.002;
+    mercuryObject.rotation.y += 0.04;
+    venusObject.rotation.y += 0.025;
+    earthObject.rotation.y += 0.01;
+    marsObject.rotation.y += 0.008;
+    jupiterObject.rotation.y += 0.002;
     //orbit of moon 
-    mesh_earth.rotation.y += 0.02;
-    mesh_jupiter.rotation.y += 0.05;
-    mesh_mars.rotation.y += 0.05;
+    earthMesh.rotation.y += 0.02;
+    jupiterMesh.rotation.y += 0.05;
+    marshMesh.rotation.y += 0.05;
     requestAnimationFrame(gameLoop);
     renderer.render(scene, camera);
 }

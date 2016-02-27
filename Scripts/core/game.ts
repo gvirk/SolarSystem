@@ -176,25 +176,10 @@ function init() {
    console.log("Added a PointLight to the scene");
     
     // add controls
+  // add controls
     gui = new GUI();
-    
-    var zoomIn = { add: function() { 
-        camera.position = new Vector3(0, 0, 0);
-        earthObject.add(camera);
-        camera.lookAt(earthMesh.position);
-     } };
-     
-     var zoomOut = { add: function() { 
-        earthObject.remove(camera);
-        camera.position.x = -20;
-        camera.position.y = 25;
-        camera.position.z = 20;
-        camera.lookAt(new Vector3(5, 0, 0));
-     } };
-    
-
-    gui.add(zoomIn, 'add');
-    gui.add(zoomOut, 'add');
+    control = new Control(0.002);
+    addControl(control);
 
     // Add framerate stats
     addStatsObject();
@@ -203,8 +188,19 @@ function init() {
     document.body.appendChild(renderer.domElement);
 
     gameLoop(); // render the scene	   
+window.addEventListener('resize', onResize, false);
 }
 
+function onResize(): void {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+}
+
+function addControl(controlObject: Control): void {
+    gui.add(controlObject, 'zoomInEarth');
+    gui.add(controlObject, 'zoom').listen();
+}
 
 function addStatsObject() {
     stats = new Stats();
